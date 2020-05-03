@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+option csharp_namespace = "CleanArchitecture.Services.Basket.API.Grpc";
+
+package BasketApi;
+
+service Basket {
+  rpc GetBasketItems (google.protobuf.Empty) returns (BasketsResponse);
+}
+
+message BasketsResponse{
+   repeated  BasketItemResponse basketItems = 1;
+}
+
+message BasketItemResponse {
+  string name = 1;
+  double price = 2;
+}

@@ -1,0 +1,50 @@
+@page "/fetchdata"
+@inject GrpcChannel Channel
+@inject IAccessTokenProvider AuthenticationService
+@using Google.Protobuf.WellKnownTypes
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ürün Ad</th>
+                <th>Ürün Fiyat</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<ProductResponse>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = new Product.ProductClient(Channel);
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+        if (tokenResult.TryGetToken(out var token))
+        {
+            var headers = new Metadata();
+            headers.Add("Authorization", $"Bearer {token.Value}");
+            products = (await client.GetProductsAsync(new Empty(),headers)).Products;
+        }
+
+    }
+
+}
