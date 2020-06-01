@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Web.Blazo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{493F0707-4952-4D94-B31E-AE6868691478}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Services.Catalog.API", "Services\Catalog\CleanArchitecture.Services.Catalog.API\CleanArchitecture.Services.Catalog.API.csproj", "{DA0BBE95-4567-4168-88C1-69F58BB5A2B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Services.Catalog.API", "Services\Catalog\CleanArchitecture.Services.Catalog.API\CleanArchitecture.Services.Catalog.API.csproj", "{DA0BBE95-4567-4168-88C1-69F58BB5A2B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
-
+@inject BasketState BasketState
+@implements IDisposable
 <div class="sidebar">
     <NavMenu />
 </div>
@@ -7,10 +8,22 @@
 <div class="main">
     <div class="top-row px-4 auth">
         <LoginDisplay />
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        <a class="nav-link btn btn-link" href="#"><i class="fas fa-shopping-cart"></i> @BasketState.OrderCount</a>
     </div>
 
     <div class="content px-4">
         @Body
     </div>
 </div>
+@code
+{
+    protected override void OnInitialized()
+    {
+        BasketState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        BasketState.OnChange -= StateHasChanged;
+    }
+}

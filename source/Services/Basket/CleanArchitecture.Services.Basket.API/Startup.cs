@@ -26,6 +26,7 @@ namespace CleanArchitecture.Services.Basket.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +45,7 @@ namespace CleanArchitecture.Services.Basket.API
 
             app.UseEndpoints(endpoints =>
             {
-                
+                endpoints.MapControllers();
             });
         }
     }

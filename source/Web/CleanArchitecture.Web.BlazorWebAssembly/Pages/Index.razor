@@ -1,9 +1,56 @@
 ﻿@page "/"
-
+@inject GrpcChannel Channel
+@inject IAccessTokenProvider AuthenticationService
+@using Google.Protobuf.WellKnownTypes
+@inject BasketState BasketState
 <h1>Hello, world!</h1>
 
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card-columns">
+        @foreach (var product in products)
+        {
+            <Card>
+                <CardImage Source="https://picsum.photos/277/180" Alt="Placeholder image">
+                </CardImage>
+                <CardBody>
+                    <CardTitle Size="5">@product.Name</CardTitle>
+                    <CardText>
+                        @product.Description
+                    </CardText>
+                    <Button Color="Color.Primary" Clicked="OnAddProductToBasket">Sepete Ekle</Button>
+                </CardBody>
+                <CardFooter>
+                    <small class="text-muted">@product.Price₺</small>
+                </CardFooter>
+            </Card>
+        }
+    </div>
+}
+@code {
+    private IList<ProductResponse>? products;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var client = new Product.ProductClient(Channel);
+        products = (await client.GetProductsAsync(new Empty())).Products;
 
-Welcome to your new app.
+        //var tokenResult = await AuthenticationService.RequestAccessToken();
+        //if (tokenResult.TryGetToken(out var token))
+        //{
+        //    var headers = new Metadata();
+        //    headers.Add("Authorization", $"Bearer {token.Value}");
+        //    products = (await client.GetProductsAsync(new Empty(), headers)).Products;
+        //}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    }
+    void OnAddProductToBasket()
+    {
+        BasketState.OrderCount++;
+    }
+
+}

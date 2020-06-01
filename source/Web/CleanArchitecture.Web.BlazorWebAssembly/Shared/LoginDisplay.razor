@@ -7,10 +7,10 @@
 <AuthorizeView>
     <Authorized>
         Hello, @context.User.Identity.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <button class="nav-link btn btn-link" @onclick="BeginSignOut"><i class="fas fa-sign-out-alt"></i> Log out</button>
     </Authorized>
-    <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+    <NotAuthorized>      
+        <a href="authentication/login"><i class="fas fa-sign-in-alt"></i> Log in</a>
     </NotAuthorized>
 </AuthorizeView>
 

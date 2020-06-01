@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Services.Catalog.API.Grpc
-{
-    [Authorize]    
+{   
     public class ProductService : Product.ProductBase
     {
         private readonly CatalogDbContext _catalogDbContext;
@@ -22,7 +21,7 @@ namespace CleanArchitecture.Services.Catalog.API.Grpc
         public override Task<ProductsResponse> GetProducts(Empty request, ServerCallContext context)
         {
             var productsResponse = new ProductsResponse();
-            var products = _catalogDbContext.Products.Select(q => new ProductResponse() { Name = q.Name, Price = q.Price }).ToList();
+            var products = _catalogDbContext.Products.Select(q => new ProductResponse() { Name = q.Name, Description =q.Description, Price = q.Price }).ToList();
             productsResponse.Products.AddRange(products);
             return Task.FromResult(productsResponse); 
         }

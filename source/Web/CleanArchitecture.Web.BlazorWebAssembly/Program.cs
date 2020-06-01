@@ -13,6 +13,10 @@ using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 using System.Threading;
 using Grpc.Core;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+using CleanArchitecture.Web.BlazorWebAssembly.States;
 
 namespace CleanArchitecture.Web.BlazorWebAssembly
 {
@@ -22,6 +26,13 @@ namespace CleanArchitecture.Web.BlazorWebAssembly
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
+            builder.Services
+     .AddBlazorise(options =>
+     {
+         options.ChangeTextOnKeyPress = true;
+     })
+     .AddBootstrapProviders()
+     .AddFontAwesomeIcons();
 
             var identityUrl = builder.Configuration.GetSection("IdentityUrl").Value;
             builder.Services.AddHttpClient("CleanArchitecture.Services.Identity.API", client => client.BaseAddress = new Uri(identityUrl))
@@ -29,16 +40,17 @@ namespace CleanArchitecture.Web.BlazorWebAssembly
 
             // Supply HttpClient instances that include access tokens when making requests to the server project
             builder.Services.AddTransient(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("CleanArchitecture.Services.Identity.API"));
-            
-            builder.Services.AddApiAuthorization(a => {
+
+            builder.Services.AddApiAuthorization(a =>
+            {
 
 
-                a.ProviderOptions.ConfigurationEndpoint = "https://localhost:5100/_configuration/CleanArchitecture.Web.BlazorWebAssembly";
-           
+                a.ProviderOptions.ConfigurationEndpoint = $"{identityUrl}/_configuration/CleanArchitecture.Web.BlazorWebAssembly";
 
 
-                });
-           
+
+            });
+
             builder.Services.AddSingleton(services =>
             {
                 // Get the service address from appsettings.json
@@ -55,7 +67,12 @@ namespace CleanArchitecture.Web.BlazorWebAssembly
 
                 return channel;
             });
-            await builder.Build().RunAsync();
+            builder.Services.AddSingleton<BasketState>();
+            var host = builder.Build();
+            host.Services
+      .UseBootstrapProviders()
+      .UseFontAwesomeIcons();
+            await host.RunAsync();
         }
         private class StreamingHttpHandler : DelegatingHandler
         {
