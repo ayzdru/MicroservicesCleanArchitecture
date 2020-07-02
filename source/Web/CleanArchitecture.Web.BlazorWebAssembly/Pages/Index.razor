@@ -1,10 +1,8 @@
 ﻿@page "/"
-@inject GrpcChannel Channel
+@inject Product.ProductClient ProductClient
 @inject IAccessTokenProvider AuthenticationService
 @using Google.Protobuf.WellKnownTypes
 @inject BasketState BasketState
-<h1>Hello, world!</h1>
-
 @if (products == null)
 {
     <p><em>Loading...</em></p>
@@ -36,8 +34,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var client = new Product.ProductClient(Channel);
-        products = (await client.GetProductsAsync(new Empty())).Products;
+        products = (await ProductClient.GetProductsAsync(new Empty())).Products;
 
         //var tokenResult = await AuthenticationService.RequestAccessToken();
         //if (tokenResult.TryGetToken(out var token))

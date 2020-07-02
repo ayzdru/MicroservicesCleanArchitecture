@@ -16,6 +16,8 @@ using Grpc.Core;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using CleanArchitecture.Services.Basket.API.Grpc;
+using CleanArchitecture.Services.Catalog.API.Grpc;
 using CleanArchitecture.Web.BlazorWebAssembly.States;
 
 namespace CleanArchitecture.Web.BlazorWebAssembly
@@ -43,29 +45,32 @@ namespace CleanArchitecture.Web.BlazorWebAssembly
 
             builder.Services.AddApiAuthorization(a =>
             {
-
-
                 a.ProviderOptions.ConfigurationEndpoint = $"{identityUrl}/_configuration/CleanArchitecture.Web.BlazorWebAssembly";
-
-
-
             });
+
+           
 
             builder.Services.AddSingleton(services =>
             {
                 // Get the service address from appsettings.json
                 var config = services.GetRequiredService<IConfiguration>();
-                var backendUrl = config["CatalogUrl"];
+                var catalogUrl = config["CatalogUrl"];
 
-                // Create a gRPC-Web channel pointing to the backend server.
-                //
-                // GrpcWebText is used because server streaming requires it. If server streaming is not used in your app
-                // then GrpcWeb is recommended because it produces smaller messages.
                 var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWebText, new StreamingHttpHandler(new HttpClientHandler())));
+                var channel = GrpcChannel.ForAddress(catalogUrl, new GrpcChannelOptions { HttpClient = httpClient });
 
-                var channel = GrpcChannel.ForAddress(backendUrl, new GrpcChannelOptions { HttpClient = httpClient });
+                return new Product.ProductClient(channel);
+            });
+            builder.Services.AddSingleton(services =>
+            {
+                // Get the service address from appsettings.json
+                var config = services.GetRequiredService<IConfiguration>();
+                var basketUrl = config["BasketUrl"];
 
-                return channel;
+                var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWebText, new StreamingHttpHandler(new HttpClientHandler())));
+                var channel = GrpcChannel.ForAddress(basketUrl, new GrpcChannelOptions { HttpClient = httpClient });
+
+                return new Basket.BasketClient(channel);
             });
             builder.Services.AddSingleton<BasketState>();
             var host = builder.Build();

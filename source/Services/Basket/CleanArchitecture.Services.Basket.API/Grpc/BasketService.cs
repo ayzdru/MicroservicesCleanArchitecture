@@ -20,6 +20,8 @@ namespace CleanArchitecture.Services.Basket.API.Grpc
 
         public override async Task<BasketsResponse> GetBasketItems(Empty request, ServerCallContext context)
         {
+            var basketResponse = new BasketsResponse();
+            basketResponse.BasketItems.Add(new BasketItemResponse(){ Name = "Deneme 1", Price = 5, Quantity =1 });
             string CachedTimeUTC = "Cached Time Expired";
             var encodedCachedTimeUTC = await _cache.GetAsync("cachedTimeUTC");
 
@@ -32,7 +34,7 @@ namespace CleanArchitecture.Services.Basket.API.Grpc
             var options = new DistributedCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromSeconds(20));
             await _cache.SetAsync("cachedTimeUTC", encodedCurrentTimeUTC, options);
-            return await Task.FromResult(new BasketsResponse());
+            return await Task.FromResult(basketResponse);
         }
     }
 }

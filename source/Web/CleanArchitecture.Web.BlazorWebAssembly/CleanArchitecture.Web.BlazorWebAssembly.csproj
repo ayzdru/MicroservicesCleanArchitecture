@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Protos\basket.proto" />
     <None Remove="Protos\product.proto" />
   </ItemGroup>
 
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Protobuf Include="Protos\basket.proto"  GrpcServices="Client" Access="Internal" />
     <Protobuf Include="Protos\product.proto" GrpcServices="Client" Access="Internal" />
   </ItemGroup>
 
