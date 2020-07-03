@@ -21,9 +21,18 @@ namespace CleanArchitecture.Services.Catalog.API.Grpc
         public override Task<ProductsResponse> GetProducts(Empty request, ServerCallContext context)
         {
             var productsResponse = new ProductsResponse();
-            var products = _catalogDbContext.Products.Select(q => new ProductResponse() { Name = q.Name, Description =q.Description, Price = q.Price }).ToList();
+            var products = _catalogDbContext.Products.Select(q => new ProductResponse() { Id=q.Id.ToString(), Name = q.Name, Description =q.Description, Price = q.Price }).ToList();
             productsResponse.Products.AddRange(products);
             return Task.FromResult(productsResponse); 
+        }
+
+        public override Task<ProductResponse> GetProductById(GetProductByIdRequest request, ServerCallContext context)
+        {
+            return Task.FromResult(_catalogDbContext.Products
+                .Where(q => q.Id == Guid.Parse(request.ProductId))
+                .Select(q => new ProductResponse()
+                    {Id = q.Id.ToString(), Price = q.Price, Description = q.Description, Name = q.Name})
+                .SingleOrDefault());
         }
     }
 }

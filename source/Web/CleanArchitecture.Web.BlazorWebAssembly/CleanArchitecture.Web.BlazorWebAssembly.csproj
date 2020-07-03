@@ -13,11 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Protos\basket.proto" />
-    <None Remove="Protos\product.proto" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Blazorise.Bootstrap" Version="0.9.0.2" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
@@ -33,8 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\basket.proto"  GrpcServices="Client" Access="Internal" />
-    <Protobuf Include="Protos\product.proto" GrpcServices="Client" Access="Internal" />
+    <Protobuf Include="..\..\Services\Basket\CleanArchitecture.Services.Basket.API\Protos\basket.proto"  GrpcServices="Client" Access="Internal">
+      <Link>Protos\basket.proto</Link>
+    </Protobuf>
+    <Protobuf Include="..\..\Services\Catalog\CleanArchitecture.Services.Catalog.API\Protos\product.proto" GrpcServices="Client" Access="Internal">
+      <Link>Protos\product.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

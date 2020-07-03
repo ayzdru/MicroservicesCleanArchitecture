@@ -3,6 +3,8 @@
 @inject IAccessTokenProvider AuthenticationService
 @using Google.Protobuf.WellKnownTypes
 @inject BasketState BasketState
+@inject NavigationManager Navigation
+@inject Basket.BasketClient BasketClient
 @if (products == null)
 {
     <p><em>Loading...</em></p>
@@ -13,17 +15,19 @@ else
         @foreach (var product in products)
         {
             <Card>
-                <CardImage Source="https://picsum.photos/277/180" Alt="Placeholder image">
-                </CardImage>
-                <CardBody>
-                    <CardTitle Size="5">@product.Name</CardTitle>
+
+                <CardBody Padding="Padding.Is0">
+                    <CardImage Source="https://picsum.photos/277/180" Alt="Placeholder image" Class="d-block w-100">
+                    </CardImage>
+                </CardBody>
+                <CardFooter>
+                    <CardTitle Size="5">
+                        @product.Name - <small class="text-muted">@product.Price₺</small>
+                    </CardTitle>
                     <CardText>
                         @product.Description
                     </CardText>
-                    <Button Color="Color.Primary" Clicked="OnAddProductToBasket">Sepete Ekle</Button>
-                </CardBody>
-                <CardFooter>
-                    <small class="text-muted">@product.Price₺</small>
+                    <Button Color="Color.Success" Clicked="(() => OnAddProductToBasketAsync(product.Id))">Add To Basket</Button>
                 </CardFooter>
             </Card>
         }
@@ -32,22 +36,42 @@ else
 @code {
     private IList<ProductResponse>? products;
 
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthState { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
+
         products = (await ProductClient.GetProductsAsync(new Empty())).Products;
 
-        //var tokenResult = await AuthenticationService.RequestAccessToken();
-        //if (tokenResult.TryGetToken(out var token))
-        //{
-        //    var headers = new Metadata();
-        //    headers.Add("Authorization", $"Bearer {token.Value}");
-        //    products = (await client.GetProductsAsync(new Empty(), headers)).Products;
-        //}
+
 
     }
-    void OnAddProductToBasket()
+    async  Task OnAddProductToBasketAsync(string productId)
     {
-        BasketState.OrderCount++;
+        var user = (await AuthState).User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var tokenResult = await AuthenticationService.RequestAccessToken();
+            if (tokenResult.TryGetToken(out var token))
+            {
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token.Value}");
+                var isAdded = await BasketClient.AddProductToBasketAsync(new BasketRequest() {ProductId = productId}, headers);
+                if (isAdded.Value)
+                {
+                    BasketState.OrderCount++;
+                }
+            }
+
+        }
+        else
+        {
+            Console.WriteLine("You're not logged in.");
+
+            Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+        }
+
     }
 
 }

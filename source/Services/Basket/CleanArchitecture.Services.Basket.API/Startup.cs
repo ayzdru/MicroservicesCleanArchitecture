@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Services.Basket.API.Grpc;
+using CleanArchitecture.Services.Catalog.API.Grpc;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +38,7 @@ namespace CleanArchitecture.Services.Basket.API
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
-
+            var catalogUrl = Configuration.GetValue<string>("CatalogUrl");
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -63,6 +67,11 @@ namespace CleanArchitecture.Services.Basket.API
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
+            services.AddHttpContextAccessor();
+
+            var channel = GrpcChannel.ForAddress(catalogUrl);
+            var client = new Product.ProductClient(channel);
+            services.AddSingleton(client);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,15 +6,20 @@ option csharp_namespace = "CleanArchitecture.Services.Catalog.API.Grpc";
 package ProductApi;
 
 service Product {
-  rpc GetProducts (google.protobuf.Empty) returns (ProductsResponse);
+	rpc GetProducts (google.protobuf.Empty) returns (ProductsResponse);
+	rpc GetProductById (GetProductByIdRequest) returns (ProductResponse);
 }
 
 message ProductsResponse{
-   repeated  ProductResponse products = 1;
+	repeated  ProductResponse products = 1;
 }
 
 message ProductResponse {
-  string name = 1;
-  string description = 2;
-  double price = 3;
+	string id = 1;
+	string name = 2;
+	string description = 3;
+	double price = 4;
+}
+message GetProductByIdRequest{
+	string productId = 1;
 }
