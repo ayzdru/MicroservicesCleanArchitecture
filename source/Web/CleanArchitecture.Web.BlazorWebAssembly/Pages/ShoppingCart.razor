@@ -4,6 +4,7 @@
 @inject IAccessTokenProvider AuthenticationService
 @using Google.Protobuf.WellKnownTypes
 @inject BasketState BasketState
+@inject IJSRuntime JS
 @code {
     private IList<BasketItemResponse>? basketItems;
 
@@ -15,6 +16,14 @@
             var headers = new Metadata();
             headers.Add("Authorization", $"Bearer {token.Value}");
             basketItems = (await BasketClient.GetBasketItemsAsync(new Empty(), headers)).BasketItems;
+        }
+
+    }
+    private async Task Delete(BasketItemResponse basketItem)
+    {
+        if (await JS.Confirm($"Remove {basketItem.Name} product from the basket?"))
+        {
+            basketItems.Remove(basketItem);
         }
 
     }
@@ -71,13 +80,13 @@ else
                                 </td>
                                 <td>@basketItem.Price</td>
                                 <td data-th="Quantity">
-                                    <input type="number" class="form-control text-center" value="@basketItem.Quantity"   @onchange="@((ChangeEventArgs e) => basketItem.Quantity = 
+                                    <input type="number" class="form-control text-center" value="@basketItem.Quantity" @onchange="@((ChangeEventArgs e) => basketItem.Quantity =
                                                                                                                                         int.Parse(e.Value.ToString()))">
                                 </td>
                                 <td>@(basketItem.Price * basketItem.Quantity )</td>
                                 <td class="actions" data-th="" style="width: 10%;">
                                     <button class="btn btn-info btn-sm"><i class="fas fa-sync"></i></button>
-                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-danger btn-sm" @onclick="(() => Delete(basketItem))"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                         }

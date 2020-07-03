@@ -20,8 +20,9 @@ message BasketsResponse{
 }
 
 message BasketItemResponse {
-  string name = 1;
-  string description = 2;
-  int32 quantity = 3;
-  double price = 4;
+  string productId =1;
+  string name = 2;
+  string description = 3;
+  int32 quantity = 4;
+  double price = 5;
 }
