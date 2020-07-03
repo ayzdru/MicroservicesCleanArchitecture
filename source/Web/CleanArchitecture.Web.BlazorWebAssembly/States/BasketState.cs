@@ -2,21 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CleanArchitecture.Services.Basket.API.Grpc;
 
 namespace CleanArchitecture.Web.BlazorWebAssembly.States
 {
     public class BasketState
     {
-        private int _orderCount;
-        public int OrderCount
-        {
+        private IList<BasketItemResponse> _basketItems = new List<BasketItemResponse>();
+        public IList<BasketItemResponse> BasketItems {
             get
             {
-                return _orderCount;
+
+                return _basketItems;
             }
             set
             {
-                _orderCount = value;
+                _basketItems = value;
+                BasketItemsCount = BasketItems.Count;
+            }
+        } 
+        private int _basketItemsCount;
+        public int BasketItemsCount
+        {
+            get
+            {
+                return _basketItemsCount;
+            }
+            set
+            {
+                _basketItemsCount = value;
                 NotifyStateChanged();
             }
         }

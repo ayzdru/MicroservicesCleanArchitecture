@@ -60,7 +60,7 @@ else
                 var isAdded = await BasketClient.AddProductToBasketAsync(new BasketRequest() {ProductId = productId}, headers);
                 if (isAdded.Value)
                 {
-                    BasketState.OrderCount++;
+                    BasketState.BasketItemsCount++;
                 }
             }
 

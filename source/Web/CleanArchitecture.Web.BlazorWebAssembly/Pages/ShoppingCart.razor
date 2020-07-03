@@ -3,10 +3,9 @@
 @inject Basket.BasketClient BasketClient
 @inject IAccessTokenProvider AuthenticationService
 @using Google.Protobuf.WellKnownTypes
-@inject BasketState BasketState
 @inject IJSRuntime JS
+@inject BasketState BasketState
 @code {
-    private IList<BasketItemResponse>? basketItems;
 
     protected override async Task OnInitializedAsync()
     {
@@ -15,7 +14,7 @@
         {
             var headers = new Metadata();
             headers.Add("Authorization", $"Bearer {token.Value}");
-            basketItems = (await BasketClient.GetBasketItemsAsync(new Empty(), headers)).BasketItems;
+            BasketState.BasketItems = (await BasketClient.GetBasketItemsAsync(new Empty(), headers)).BasketItems;
         }
 
     }
@@ -23,14 +22,21 @@
     {
         if (await JS.Confirm($"Remove {basketItem.Name} product from the basket?"))
         {
-            basketItems.Remove(basketItem);
+            BasketState.BasketItems.Remove(basketItem);
+            BasketState.BasketItemsCount--;
         }
 
     }
 }
-@if (basketItems == null)
+
+@if (BasketState.BasketItems == null)
 {
     <p><em>Loading...</em></p>
+}
+else if (!BasketState.BasketItems.Any())
+{
+    <h2>No orders placed</h2>
+    <a class="btn btn-success" href="/">Order some product</a>
 }
 else
 {
@@ -62,7 +68,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var basketItem in basketItems)
+                        @foreach (var basketItem in BasketState.BasketItems)
                         {
                             <tr>
                                 <td>
