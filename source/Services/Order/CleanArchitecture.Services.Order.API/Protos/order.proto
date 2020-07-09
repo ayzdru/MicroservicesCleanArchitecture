@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "CleanArchitecture.Services.Order.API.Grpc";
+
+package OrderApi;
+
+service Order {
+	rpc GetProducts (google.protobuf.Empty) returns (ProductsResponse);
+	rpc GetProductById (GetProductByIdRequest) returns (ProductResponse);
+}
+
+message ProductsResponse{
+	repeated  ProductResponse products = 1;
+}
+
+message ProductResponse {
+	string id = 1;
+	string name = 2;
+	string description = 3;
+	double price = 4;
+}
+message GetProductByIdRequest{
+	string productId = 1;
+}
