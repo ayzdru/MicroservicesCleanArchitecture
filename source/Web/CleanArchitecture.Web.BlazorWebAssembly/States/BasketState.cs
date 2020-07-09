@@ -6,9 +6,17 @@ using CleanArchitecture.Services.Basket.API.Grpc;
 
 namespace CleanArchitecture.Web.BlazorWebAssembly.States
 {
+
     public class BasketState
     {
+
+        public Dictionary<string, int> OldBasketItemQuantities
+        {
+            get;
+            set;
+        }
         private IList<BasketItemResponse> _basketItems = new List<BasketItemResponse>();
+
         public IList<BasketItemResponse> BasketItems {
             get
             {
@@ -18,6 +26,11 @@ namespace CleanArchitecture.Web.BlazorWebAssembly.States
             set
             {
                 _basketItems = value;
+                OldBasketItemQuantities = new Dictionary<string, int>();
+                foreach (var basketItem in value)
+                {
+                    OldBasketItemQuantities.Add(basketItem.ProductId, basketItem.Quantity);
+                }
                 BasketItemsCount = BasketItems.Count;
             }
         } 

@@ -41,13 +41,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-
+        var user = (await AuthState).User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var tokenResult = await AuthenticationService.RequestAccessToken();
+            if (tokenResult.TryGetToken(out var token))
+            {
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token.Value}");
+                BasketState.BasketItemsCount = (await BasketClient.GetBasketItemsCountAsync(new Empty(), headers)).Value;
+            }
+        }
         products = (await ProductClient.GetProductsAsync(new Empty())).Products;
 
-
-
     }
-    async  Task OnAddProductToBasketAsync(string productId)
+    async Task OnAddProductToBasketAsync(string productId)
     {
         var user = (await AuthState).User;
         if (user.Identity.IsAuthenticated)
@@ -57,7 +65,7 @@ else
             {
                 var headers = new Metadata();
                 headers.Add("Authorization", $"Bearer {token.Value}");
-                var isAdded = await BasketClient.AddProductToBasketAsync(new BasketRequest() {ProductId = productId}, headers);
+                var isAdded = await BasketClient.AddProductToBasketAsync(new BasketRequest() { ProductId = productId }, headers);
                 if (isAdded.Value)
                 {
                     BasketState.BasketItemsCount++;
@@ -67,8 +75,6 @@ else
         }
         else
         {
-            Console.WriteLine("You're not logged in.");
-
             Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
         }
 

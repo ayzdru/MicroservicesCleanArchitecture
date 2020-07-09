@@ -28,10 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\..\Services\Basket\CleanArchitecture.Services.Basket.API\Protos\basket.proto" GrpcServices="Client" Access="Internal">
+    <Protobuf Include="..\..\Services\Basket\CleanArchitecture.Services.Basket.API\Protos\basket.proto" GrpcServices="Client" Access="Public">
       <Link>Protos\basket.proto</Link>
     </Protobuf>
-    <Protobuf Include="..\..\Services\Catalog\CleanArchitecture.Services.Catalog.API\Protos\product.proto" GrpcServices="Client" Access="Internal">
+    <Protobuf Include="..\..\Services\Catalog\CleanArchitecture.Services.Catalog.API\Protos\product.proto" GrpcServices="Client" Access="Public">
       <Link>Protos\product.proto</Link>
     </Protobuf>
   </ItemGroup>

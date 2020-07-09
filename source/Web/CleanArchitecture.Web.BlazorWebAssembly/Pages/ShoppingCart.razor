@@ -7,6 +7,34 @@
 @inject BasketState BasketState
 @code {
 
+    private double _total = 0;
+
+    private void SumTotal()
+    {
+        _total = BasketState.BasketItems.Sum(q => q.Price * q.Quantity);
+    }
+    private async Task UpdateQuantity(BasketItemResponse basketItem)
+    {
+        var tokenResult = await AuthenticationService.RequestAccessToken();
+
+        if (tokenResult.TryGetToken(out var token))
+        {
+            var headers = new Metadata();
+            headers.Add("Authorization", $"Bearer {token.Value}");
+            var isUpdated = (await BasketClient.UpdateQuantityByProductIdAsync(new UpdateQuantityRequest() { ProductId = basketItem.ProductId, Quantity = basketItem.Quantity }, headers)).Value;
+            if (isUpdated)
+            {
+                BasketState.OldBasketItemQuantities[basketItem.ProductId] = basketItem.Quantity;
+                SumTotal();
+            }
+            else
+            {
+                basketItem.Quantity = BasketState.OldBasketItemQuantities[basketItem.ProductId];
+                await JS.InvokeAsync<object>("alert", "The basket item could not be updated.");
+            }
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         var tokenResult = await AuthenticationService.RequestAccessToken();
@@ -15,15 +43,32 @@
             var headers = new Metadata();
             headers.Add("Authorization", $"Bearer {token.Value}");
             BasketState.BasketItems = (await BasketClient.GetBasketItemsAsync(new Empty(), headers)).BasketItems;
+            SumTotal();
         }
-
     }
     private async Task Delete(BasketItemResponse basketItem)
     {
         if (await JS.Confirm($"Remove {basketItem.Name} product from the basket?"))
         {
-            BasketState.BasketItems.Remove(basketItem);
-            BasketState.BasketItemsCount--;
+            var tokenResult = await AuthenticationService.RequestAccessToken();
+            if (tokenResult.TryGetToken(out var token))
+            {
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token.Value}");
+                var isDeleted = (await BasketClient.DeleteBasketItemByProductIdAsync(new BasketRequest() { ProductId = basketItem.ProductId }, headers)).Value;
+                if (isDeleted)
+                {
+                    BasketState.BasketItems.Remove(basketItem);
+                    BasketState.BasketItemsCount--;
+                    await JS.InvokeAsync<object>("alert", "The basket item deleted.");
+                }
+                else
+                {
+                    await JS.InvokeAsync<object>
+                        ("alert", "The basket item could not be deleted.");
+                }
+            }
+
         }
 
     }
@@ -86,12 +131,11 @@ else
                                 </td>
                                 <td>@basketItem.Price</td>
                                 <td data-th="Quantity">
-                                    <input type="number" class="form-control text-center" value="@basketItem.Quantity" @onchange="@((ChangeEventArgs e) => basketItem.Quantity =
-                                                                                                                                        int.Parse(e.Value.ToString()))">
+                                    <input type="number" class="form-control text-center" value="@basketItem.Quantity" @onchange="@((ChangeEventArgs e) => { if (int.TryParse(e.Value.ToString(), out int value) && value > 0){ basketItem.Quantity = value; } })">
                                 </td>
                                 <td>@(basketItem.Price * basketItem.Quantity )</td>
                                 <td class="actions" data-th="" style="width: 10%;">
-                                    <button class="btn btn-info btn-sm"><i class="fas fa-sync"></i></button>
+                                    <button class="btn btn-info btn-sm" hidden="@(basketItem.Quantity == BasketState.OldBasketItemQuantities[basketItem.ProductId])" @onclick="@( async () => { await UpdateQuantity(basketItem); })"><i class="fas fa-sync"></i></button>
                                     <button class="btn btn-danger btn-sm" @onclick="(() => Delete(basketItem))"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -101,7 +145,7 @@ else
                         <tr>
                             <td><a href="/" class="btn btn-warning text-white"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                             <td colspan="2" class="hidden-xs"></td>
-                            <td class="hidden-xs text-center" style="width: 10%;"><strong>Total : 47,000</strong></td>
+                            <td class="hidden-xs text-center" style="width: 10%;"><strong>Total : @_total</strong></td>
                             <td><a href="#" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
                         </tr>
                     </tfoot>

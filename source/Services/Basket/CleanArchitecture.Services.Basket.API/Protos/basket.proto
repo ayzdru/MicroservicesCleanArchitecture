@@ -8,7 +8,10 @@ package BasketApi;
 
 service Basket {
   rpc GetBasketItems (google.protobuf.Empty) returns (BasketsResponse);
-  rpc AddProductToBasket(BasketRequest) returns (google.protobuf.BoolValue) {}
+  rpc AddProductToBasket(BasketRequest) returns (google.protobuf.BoolValue);
+  rpc GetBasketItemsCount(google.protobuf.Empty) returns (google.protobuf.Int32Value);
+  rpc DeleteBasketItemByProductId (BasketRequest) returns (google.protobuf.BoolValue);
+  rpc UpdateQuantityByProductId(UpdateQuantityRequest) returns (google.protobuf.BoolValue);
 }
 
 message BasketRequest {
@@ -25,4 +28,8 @@ message BasketItemResponse {
   string description = 3;
   int32 quantity = 4;
   double price = 5;
+}
+message UpdateQuantityRequest {
+	string productId = 1;
+	int32 quantity = 2;
 }

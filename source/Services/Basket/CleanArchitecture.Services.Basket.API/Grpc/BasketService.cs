@@ -44,7 +44,7 @@ namespace CleanArchitecture.Services.Basket.API.Grpc
                       var product =  await _productClient.GetProductByIdAsync(new GetProductByIdRequest()
                             {ProductId = basketItem.ProductId});
 
-                      basketResponse.BasketItems.Add(new BasketItemResponse() { Name = product.Name, Description = product.Description, Price = product.Price, Quantity = basketItem.Quantity });
+                      basketResponse.BasketItems.Add(new BasketItemResponse() { Name = product.Name, Description = product.Description, Price = product.Price, Quantity = basketItem.Quantity, ProductId = product.Id});
                     }
                 }
             }
@@ -80,6 +80,79 @@ namespace CleanArchitecture.Services.Basket.API.Grpc
                 status.Value = false;
                 return await Task.FromResult(status);
             }
+        }
+
+        public override async Task<Int32Value> GetBasketItemsCount(Empty request, ServerCallContext context)
+        {
+            Int32Value count = new Int32Value();
+            List<BasketItem> basketItems = null;
+            var userId = _httpContextAccessor.HttpContext.User?.FindFirst(x => x.Type.Equals("sub"))?.Value;
+            if (userId != null)
+            {
+                var basketItemsJson = await _cache.GetStringAsync(userId);
+                if (!string.IsNullOrEmpty(basketItemsJson))
+                {
+                    basketItems = JsonSerializer.Deserialize<List<BasketItem>>(basketItemsJson);
+                    count.Value = basketItems.Count();
+                }
+            }
+            return await Task.FromResult(count);
+        }
+
+        public override async Task<BoolValue> DeleteBasketItemByProductId(BasketRequest request, ServerCallContext context)
+        {
+            BoolValue status = new BoolValue();
+            var options = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromHours(2));
+            var userId = _httpContextAccessor.HttpContext.User?.FindFirst(x => x.Type.Equals("sub"))?.Value;
+            if (userId != null)
+            {
+                List<BasketItem> basketItems;
+                var basketItemsJson = await _cache.GetStringAsync(userId);
+                if (!string.IsNullOrEmpty(basketItemsJson))
+                {
+                    basketItems = JsonSerializer.Deserialize<List<BasketItem>>(basketItemsJson);
+                   var basketItem = basketItems.Where(b => b.ProductId == request.ProductId).SingleOrDefault();
+                   if (basketItem != null)
+                   {
+                       basketItems.Remove(basketItem);
+                       var basketItemsSeriliazeJson = JsonSerializer.Serialize(basketItems);
+                       await _cache.SetStringAsync(userId, basketItemsSeriliazeJson, options);
+                       status.Value = true;
+                       return await Task.FromResult(status);
+                    }
+                }
+            }
+            status.Value = false;
+            return await Task.FromResult(status);
+        }
+
+        public override async Task<BoolValue> UpdateQuantityByProductId(UpdateQuantityRequest request, ServerCallContext context)
+        {
+            BoolValue status = new BoolValue();
+            var options = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromHours(2));
+            var userId = _httpContextAccessor.HttpContext.User?.FindFirst(x => x.Type.Equals("sub"))?.Value;
+            if (userId != null)
+            {
+                List<BasketItem> basketItems;
+                var basketItemsJson = await _cache.GetStringAsync(userId);
+                if (!string.IsNullOrEmpty(basketItemsJson))
+                {
+                    basketItems = JsonSerializer.Deserialize<List<BasketItem>>(basketItemsJson);
+                    var basketItem = basketItems.Where(b => b.ProductId == request.ProductId).SingleOrDefault();
+                    if (basketItem != null)
+                    {
+                        basketItem.Quantity = request.Quantity;
+                         var basketItemsSeriliazeJson = JsonSerializer.Serialize(basketItems);
+                        await _cache.SetStringAsync(userId, basketItemsSeriliazeJson, options);
+                        status.Value = true;
+                        return await Task.FromResult(status);
+                    }
+                }
+            }
+            status.Value = false;
+            return await Task.FromResult(status);
         }
     }
 }
