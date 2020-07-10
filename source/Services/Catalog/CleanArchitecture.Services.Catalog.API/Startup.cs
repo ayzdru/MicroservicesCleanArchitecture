@@ -59,7 +59,6 @@ namespace CleanArchitecture.Services.Catalog.API
             });
             services.AddAuthorization();
             services.AddGrpc();
-            services.AddGrpcWeb(o => o.GrpcWebEnabled = true);
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -84,7 +83,7 @@ namespace CleanArchitecture.Services.Catalog.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<ProductService>().RequireCors("CorsPolicy");
+                endpoints.MapGrpcService<ProductService>().RequireCors("CorsPolicy").EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
                 {

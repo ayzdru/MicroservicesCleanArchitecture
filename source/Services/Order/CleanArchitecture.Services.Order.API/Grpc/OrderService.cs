@@ -35,7 +35,7 @@ namespace CleanArchitecture.Services.Order.API.Grpc
             var userIdValue = _httpContextAccessor.HttpContext.User?.FindFirst(x => x.Type.Equals("sub"))?.Value;
             if (userIdValue != null && Guid.TryParse(userIdValue, out Guid userId))
             {
-                using (var transaction = _orderDbContext.Database.BeginTransaction(_capBus, autoCommit: true))
+                using (_orderDbContext.Database.BeginTransaction(_capBus, autoCommit: true))
                 {
                     var user = _orderDbContext.Users.Where(q => q.Id == userId).SingleOrDefault();
                     if (user == null)
@@ -61,22 +61,21 @@ namespace CleanArchitecture.Services.Order.API.Grpc
                                 }
                                 else
                                 {
-                                    await transaction.RollbackAsync();
+                                   // await transaction.RollbackAsync();
                                 }
                                 newOrder.Entity.AddOrderItem(new OrderItem() { ProductId = productId, TotalAmount = basketItem.Price * basketItem.Quantity});
                             }
                             else
                             {
-                                await transaction.RollbackAsync();
+                                //await transaction.RollbackAsync();
                             }
                         }
                         _capBus.Publish("AddPayment", newOrder.Entity.Id);
-                        await _orderDbContext.SaveChangesAsync();
-                        await transaction.CommitAsync();
+                        _orderDbContext.SaveChanges();
                     }
                     else
                     {
-                        await transaction.RollbackAsync();
+                        //await transaction.RollbackAsync();
                     }
                 }
                 status.Value = true;

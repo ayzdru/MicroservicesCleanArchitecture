@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using CleanArchitecture.Services.Payment.API.Data;
 using CleanArchitecture.Services.Payment.API.Grpc;
 using DotNetCore.CAP;
-using DotNetCore.CAP.Dashboard.NodeDiscovery;
 using DotNetCore.CAP.Messages;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,9 +29,10 @@ namespace CleanArchitecture.Services.Payment.API
         }
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<PaymentDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("PaymentConnectionString")));
+            //services.AddDbContext<PaymentDbContext>(options =>
+            //    options.UseSqlServer(
+            //        Configuration.GetConnectionString("PaymentConnectionString")));
+            services.AddDbContext<PaymentDbContext>();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
@@ -59,7 +59,6 @@ namespace CleanArchitecture.Services.Payment.API
             });
             services.AddAuthorization();
             services.AddGrpc();
-            services.AddGrpcWeb(o => o.GrpcWebEnabled = true);
             services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
@@ -99,7 +98,7 @@ namespace CleanArchitecture.Services.Payment.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<PaymentService>().RequireCors("CorsPolicy");
+                endpoints.MapGrpcService<PaymentService>().RequireCors("CorsPolicy").EnableGrpcWeb();
 
                 endpoints.MapGet("/", async context =>
                 {

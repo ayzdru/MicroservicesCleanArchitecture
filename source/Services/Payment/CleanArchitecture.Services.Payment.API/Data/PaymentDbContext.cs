@@ -9,9 +9,16 @@ namespace CleanArchitecture.Services.Payment.API.Data
 {
     public class PaymentDbContext : DbContext
     {
-        public PaymentDbContext(DbContextOptions<PaymentDbContext> options)
-            : base(options)
-        { }
+        //public PaymentDbContext(DbContextOptions<PaymentDbContext> options)
+        //    : base(options)
+        //{ }
+        public const string ConnectionString = "Server=(local);Database=PaymentDb;Trusted_Connection=True;";
+
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer(ConnectionString);
+        }
         public DbSet<Entities.Payment> Payments { get; set; }
     }
 }
