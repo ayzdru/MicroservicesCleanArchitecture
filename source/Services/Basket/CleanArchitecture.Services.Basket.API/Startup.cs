@@ -31,14 +31,13 @@ namespace CleanArchitecture.Services.Basket.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
-            var catalogUrl = Configuration.GetValue<string>("CatalogUrl");
+           
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -68,13 +67,12 @@ namespace CleanArchitecture.Services.Basket.API
                     new[] { "application/octet-stream" });
             });
             services.AddHttpContextAccessor();
-
+            var catalogUrl = Configuration.GetValue<string>("CatalogUrl");
             var channel = GrpcChannel.ForAddress(catalogUrl);
             var client = new Product.ProductClient(channel);
             services.AddSingleton(client);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
@@ -96,7 +94,7 @@ namespace CleanArchitecture.Services.Basket.API
 
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                    await context.Response.WriteAsync("Basket MicroService");
                 });
             });
         }

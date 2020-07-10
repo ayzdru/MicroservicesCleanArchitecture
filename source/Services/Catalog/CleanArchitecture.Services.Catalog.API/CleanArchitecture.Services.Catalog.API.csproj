@@ -18,7 +18,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ApiModels\" />
-    <Folder Include="Data\Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="Protos\product.proto" GrpcServices="Server" />

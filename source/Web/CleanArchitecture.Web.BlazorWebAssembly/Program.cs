@@ -18,6 +18,7 @@ using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using CleanArchitecture.Services.Basket.API.Grpc;
 using CleanArchitecture.Services.Catalog.API.Grpc;
+using CleanArchitecture.Services.Order.API.Grpc;
 using CleanArchitecture.Web.BlazorWebAssembly.States;
 
 namespace CleanArchitecture.Web.BlazorWebAssembly
@@ -71,6 +72,17 @@ namespace CleanArchitecture.Web.BlazorWebAssembly
                 var channel = GrpcChannel.ForAddress(basketUrl, new GrpcChannelOptions { HttpClient = httpClient });
 
                 return new Basket.BasketClient(channel);
+            });
+            builder.Services.AddSingleton(services =>
+            {
+                // Get the service address from appsettings.json
+                var config = services.GetRequiredService<IConfiguration>();
+                var orderUrl = config["OrderUrl"];
+
+                var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWebText, new StreamingHttpHandler(new HttpClientHandler())));
+                var channel = GrpcChannel.ForAddress(orderUrl, new GrpcChannelOptions { HttpClient = httpClient });
+
+                return new Order.OrderClient(channel);
             });
             builder.Services.AddSingleton<BasketState>();
             var host = builder.Build();

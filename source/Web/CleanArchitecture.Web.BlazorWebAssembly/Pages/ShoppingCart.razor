@@ -1,12 +1,15 @@
 ﻿@page "/shopping-cart"
 @attribute [Authorize]
 @inject Basket.BasketClient BasketClient
+@inject Order.OrderClient OrderClient
 @inject IAccessTokenProvider AuthenticationService
 @using Google.Protobuf.WellKnownTypes
 @inject IJSRuntime JS
 @inject BasketState BasketState
+@inject NavigationManager Navigation
 @code {
-
+    [CascadingParameter]
+    protected Task<AuthenticationState> AuthState { get; set; }
     private double _total = 0;
 
     private void SumTotal()
@@ -71,6 +74,30 @@
 
         }
 
+    }
+
+    private async Task Checkout()
+    {
+        var user = (await AuthState).User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var tokenResult = await AuthenticationService.RequestAccessToken();
+            if (tokenResult.TryGetToken(out var token))
+            {
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token.Value}");
+                var isCompleted = await OrderClient.CheckoutAsync(new Empty(), headers);
+                if (isCompleted.Value)
+                {
+                
+                }
+            }
+
+        }
+        else
+        {
+            Navigation.NavigateTo($"authentication/login?returnUrl={Uri.EscapeDataString(Navigation.Uri)}");
+        }
     }
 }
 
@@ -146,7 +173,7 @@ else
                             <td><a href="/" class="btn btn-warning text-white"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
                             <td colspan="2" class="hidden-xs"></td>
                             <td class="hidden-xs text-center" style="width: 10%;"><strong>Total : @_total</strong></td>
-                            <td><a href="#" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
+                            <td><button class="btn btn-success btn-block" @onclick="(()=> Checkout())">Checkout <i class="fa fa-angle-right"></i></button></td>
                         </tr>
                     </tfoot>
                 </table>

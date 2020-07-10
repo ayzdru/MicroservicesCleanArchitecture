@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using CleanArchitecture.Services.Order.API.Data;
 using CleanArchitecture.Services.Order.API.Grpc;
 using DotNetCore.CAP.Dashboard.NodeDiscovery;
+using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Savorboard.CAP.InMemoryMessageQueue;
 
 namespace CleanArchitecture.Services.Order.API
 {
@@ -26,6 +28,9 @@ namespace CleanArchitecture.Services.Order.API
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<OrderDbContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("OrderConnectionString")));
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
@@ -57,22 +62,17 @@ namespace CleanArchitecture.Services.Order.API
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
-            services.AddTransient<OrderService>();
             services.AddCap(x =>
             {
-                x.UseInMemoryStorage();
+                x.UseEntityFramework<OrderDbContext>();
                 x.UseRabbitMQ("localhost");
-                x.UseDashboard();
-                x.UseDiscovery(d =>
-                {
-                    d.DiscoveryServerHostName = "localhost";
-                    d.DiscoveryServerPort = 8500;
-                    d.CurrentNodeHostName = "localhost";
-                    d.CurrentNodePort = 5103;
-                    d.NodeId = "Order";
-                    d.NodeName = "Order Node";
-                });
             });
+
+            services.AddHttpContextAccessor();
+            var basketUrl = Configuration.GetValue<string>("BasketUrl");
+            var channel = GrpcChannel.ForAddress(basketUrl);
+            var client = new CleanArchitecture.Services.Basket.API.Grpc.Basket.BasketClient(channel);
+            services.AddSingleton(client);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -97,7 +97,7 @@ namespace CleanArchitecture.Services.Order.API
 
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                    await context.Response.WriteAsync("Order MicroService");
                 });
             });
         }

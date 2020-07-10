@@ -34,6 +34,9 @@
     <Protobuf Include="..\..\Services\Catalog\CleanArchitecture.Services.Catalog.API\Protos\product.proto" GrpcServices="Client" Access="Public">
       <Link>Protos\product.proto</Link>
     </Protobuf>
+	  <Protobuf Include="..\..\Services\Order\CleanArchitecture.Services.Order.API\Protos\order.proto" GrpcServices="Client" Access="Public">
+		  <Link>Protos\order.proto</Link>
+	  </Protobuf>
   </ItemGroup>
 
 </Project>

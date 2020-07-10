@@ -28,12 +28,11 @@ namespace CleanArchitecture.Services.Catalog.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CatalogDbContext>(options =>
                  options.UseSqlServer(
-                     Configuration.GetConnectionString("CatalogConnection")));
+                     Configuration.GetConnectionString("CatalogConnectionString")));
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
 
             var identityUrl = Configuration.GetValue<string>("IdentityUrl");
@@ -68,7 +67,6 @@ namespace CleanArchitecture.Services.Catalog.API
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseResponseCompression();
@@ -90,7 +88,7 @@ namespace CleanArchitecture.Services.Catalog.API
 
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                    await context.Response.WriteAsync("Catalog MicroService");
                 });
             });
         }
