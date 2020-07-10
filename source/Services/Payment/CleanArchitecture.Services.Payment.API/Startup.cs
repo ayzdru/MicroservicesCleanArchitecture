@@ -7,6 +7,7 @@ using CleanArchitecture.Services.Payment.API.Data;
 using CleanArchitecture.Services.Payment.API.Grpc;
 using DotNetCore.CAP;
 using DotNetCore.CAP.Dashboard.NodeDiscovery;
+using DotNetCore.CAP.Messages;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -69,6 +70,13 @@ namespace CleanArchitecture.Services.Payment.API
             {
                 x.UseEntityFramework<PaymentDbContext>();
                 x.UseRabbitMQ("localhost");
+                x.FailedRetryCount = 5;
+                x.FailedThresholdCallback = failed =>
+                {
+                    var aaa =
+                        $@"A message of type {failed.MessageType} failed after executing {x.FailedRetryCount} several times, 
+                        requiring manual troubleshooting. Message name: {failed.Message.GetName()}";
+                };
             });
 
           

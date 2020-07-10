@@ -23,6 +23,10 @@ namespace CleanArchitecture.Services.Payment.API.Grpc
             _capBus = capBus;
         }
 
+        public PaymentService()
+        {
+            
+        }
         [CapSubscribe("AddPayment")]
         public void AddPayment(Guid orderId)
         {
@@ -32,7 +36,6 @@ namespace CleanArchitecture.Services.Payment.API.Grpc
                 _paymentDbContext.SaveChanges();
                 transaction.Commit();
             }
-
         }
 
     }

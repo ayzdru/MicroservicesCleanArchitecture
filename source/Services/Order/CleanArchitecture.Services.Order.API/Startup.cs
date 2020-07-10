@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Services.Order.API.Data;
 using CleanArchitecture.Services.Order.API.Grpc;
 using DotNetCore.CAP.Dashboard.NodeDiscovery;
+using DotNetCore.CAP.Messages;
 using Grpc.Net.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Services.Order.API
 {
@@ -66,6 +68,13 @@ namespace CleanArchitecture.Services.Order.API
             {
                 x.UseEntityFramework<OrderDbContext>();
                 x.UseRabbitMQ("localhost");
+                x.FailedRetryCount = 5;
+                x.FailedThresholdCallback = failed =>
+                {
+                    var aaa =
+                        $@"A message of type {failed.MessageType} failed after executing {x.FailedRetryCount} several times, 
+                        requiring manual troubleshooting. Message name: {failed.Message.GetName()}";
+                };
             });
 
             services.AddHttpContextAccessor();
