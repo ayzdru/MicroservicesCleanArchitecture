@@ -21,17 +21,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Order", "Order", "{252BDBAC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Services.Identity.API", "Services\Identity\CleanArchitecture.Services.Identity.API\CleanArchitecture.Services.Identity.API.csproj", "{75548286-2551-4775-A871-21A7470B174F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Web.BlazorWebAssembly", "Web\CleanArchitecture.Web.BlazorWebAssembly\CleanArchitecture.Web.BlazorWebAssembly.csproj", "{568B25EF-E9C6-4492-8E5E-288992C05952}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{493F0707-4952-4D94-B31E-AE6868691478}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Services.Catalog.API", "Services\Catalog\CleanArchitecture.Services.Catalog.API\CleanArchitecture.Services.Catalog.API.csproj", "{DA0BBE95-4567-4168-88C1-69F58BB5A2B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Payment", "Payment", "{BCD6C76F-7558-40AA-9700-B8DCD2F7EC36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Services.Payment.API", "Services\Payment\CleanArchitecture.Services.Payment.API\CleanArchitecture.Services.Payment.API.csproj", "{BB40A5A5-EF08-42AA-AA44-1FA1B42A5068}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Services.Payment.API", "Services\Payment\CleanArchitecture.Services.Payment.API\CleanArchitecture.Services.Payment.API.csproj", "{BB40A5A5-EF08-42AA-AA44-1FA1B42A5068}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Services.Order.API", "Services\Order\CleanArchitecture.Services.Order.API\CleanArchitecture.Services.Order.API.csproj", "{68A33425-31A3-43C3-9D13-842BD34CE14B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Services.Order.API", "Services\Order\CleanArchitecture.Services.Order.API\CleanArchitecture.Services.Order.API.csproj", "{68A33425-31A3-43C3-9D13-842BD34CE14B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Web.BlazorWebAssembly.Server", "Web\CleanArchitecture.Web.BlazorWebAssembly.Server\CleanArchitecture.Web.BlazorWebAssembly.Server.csproj", "{DE1FD979-AB53-47CC-92AB-5DA45073FEBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Web.BlazorWebAssembly.Client", "Web\CleanArchitecture.Web.BlazorWebAssembly.Client\CleanArchitecture.Web.BlazorWebAssembly.Client.csproj", "{2E2833BB-0DE1-45BE-BD68-4C1172FC31DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +49,6 @@ Global
 		{75548286-2551-4775-A871-21A7470B174F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75548286-2551-4775-A871-21A7470B174F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75548286-2551-4775-A871-21A7470B174F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{568B25EF-E9C6-4492-8E5E-288992C05952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{568B25EF-E9C6-4492-8E5E-288992C05952}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{568B25EF-E9C6-4492-8E5E-288992C05952}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{568B25EF-E9C6-4492-8E5E-288992C05952}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA0BBE95-4567-4168-88C1-69F58BB5A2B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA0BBE95-4567-4168-88C1-69F58BB5A2B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA0BBE95-4567-4168-88C1-69F58BB5A2B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,6 +61,14 @@ Global
 		{68A33425-31A3-43C3-9D13-842BD34CE14B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68A33425-31A3-43C3-9D13-842BD34CE14B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68A33425-31A3-43C3-9D13-842BD34CE14B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE1FD979-AB53-47CC-92AB-5DA45073FEBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE1FD979-AB53-47CC-92AB-5DA45073FEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE1FD979-AB53-47CC-92AB-5DA45073FEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE1FD979-AB53-47CC-92AB-5DA45073FEBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E2833BB-0DE1-45BE-BD68-4C1172FC31DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E2833BB-0DE1-45BE-BD68-4C1172FC31DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E2833BB-0DE1-45BE-BD68-4C1172FC31DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E2833BB-0DE1-45BE-BD68-4C1172FC31DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,12 +81,13 @@ Global
 		{1DC17D61-EF12-4A2D-8D58-422AA9CF7D03} = {6AA30ECC-FDCB-48F7-951F-328D1216DB83}
 		{252BDBAC-7008-4FFB-A3F7-2EB41920DA2B} = {6AA30ECC-FDCB-48F7-951F-328D1216DB83}
 		{75548286-2551-4775-A871-21A7470B174F} = {1DC17D61-EF12-4A2D-8D58-422AA9CF7D03}
-		{568B25EF-E9C6-4492-8E5E-288992C05952} = {B68D6382-D066-4E1E-ABBF-91F311E8E572}
 		{493F0707-4952-4D94-B31E-AE6868691478} = {6AA30ECC-FDCB-48F7-951F-328D1216DB83}
 		{DA0BBE95-4567-4168-88C1-69F58BB5A2B7} = {493F0707-4952-4D94-B31E-AE6868691478}
 		{BCD6C76F-7558-40AA-9700-B8DCD2F7EC36} = {6AA30ECC-FDCB-48F7-951F-328D1216DB83}
 		{BB40A5A5-EF08-42AA-AA44-1FA1B42A5068} = {BCD6C76F-7558-40AA-9700-B8DCD2F7EC36}
 		{68A33425-31A3-43C3-9D13-842BD34CE14B} = {252BDBAC-7008-4FFB-A3F7-2EB41920DA2B}
+		{DE1FD979-AB53-47CC-92AB-5DA45073FEBE} = {B68D6382-D066-4E1E-ABBF-91F311E8E572}
+		{2E2833BB-0DE1-45BE-BD68-4C1172FC31DF} = {B68D6382-D066-4E1E-ABBF-91F311E8E572}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1AF80906-EA29-46E6-8780-A56FAB412EB8}

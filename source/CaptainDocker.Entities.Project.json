@@ -1,0 +1,42 @@
+[
+  {
+    "__Key__": "37927844-1ba9-43a9-b46b-f32d552a0004",
+    "Id": "37927844-1ba9-43a9-b46b-f32d552a0004",
+    "Directory": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Basket\\CleanArchitecture.Services.Basket.API\\bin\\Release\\netcoreapp3.1\\publish",
+    "Dockerfile": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Basket\\CleanArchitecture.Services.Basket.API\\Dockerfile",
+    "ImageName": "kubernetemaster:5000/basketapi:v1",
+    "Name": "CleanArchitecture.Services.Basket.API"
+  },
+  {
+    "__Key__": "6491e21e-92fb-4d6d-bc16-10bbf259146d",
+    "Id": "6491e21e-92fb-4d6d-bc16-10bbf259146d",
+    "Directory": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Catalog\\CleanArchitecture.Services.Catalog.API\\bin\\Release\\netcoreapp3.1\\publish",
+    "Dockerfile": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Catalog\\CleanArchitecture.Services.Catalog.API\\Dockerfile",
+    "ImageName": "kubernetemaster:5000/catalogapi:v1",
+    "Name": "CleanArchitecture.Services.Catalog.API"
+  },
+  {
+    "__Key__": "739de68b-a3a5-4c8d-a120-f755b2a84eb5",
+    "Id": "739de68b-a3a5-4c8d-a120-f755b2a84eb5",
+    "Directory": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Identity\\CleanArchitecture.Services.Identity.API\\bin\\Release\\netcoreapp3.1\\publish",
+    "Dockerfile": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Identity\\CleanArchitecture.Services.Identity.API\\Dockerfile",
+    "ImageName": "kubernetemaster:5000/identityapi:v1",
+    "Name": "CleanArchitecture.Services.Identity.API"
+  },
+  {
+    "__Key__": "fb7f98b0-3972-47b5-a147-24a03eb0a138",
+    "Id": "fb7f98b0-3972-47b5-a147-24a03eb0a138",
+    "Directory": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Order\\CleanArchitecture.Services.Order.API\\bin\\Release\\netcoreapp3.1\\publish",
+    "Dockerfile": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Services\\Order\\CleanArchitecture.Services.Order.API\\Dockerfile",
+    "ImageName": "kubernetemaster:5000/orderapi:v1",
+    "Name": "CleanArchitecture.Services.Order.API"
+  },
+  {
+    "__Key__": "9e1a498a-9d40-4275-832e-1cbe85f3b052",
+    "Id": "9e1a498a-9d40-4275-832e-1cbe85f3b052",
+    "Directory": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Web\\CleanArchitecture.Web.BlazorWebAssembly.Server\\bin\\Release\\netcoreapp3.1\\publish",
+    "Dockerfile": "C:\\Projects\\ayzdru\\MicroservicesCleanArchitecture\\source\\Web\\CleanArchitecture.Web.BlazorWebAssembly.Server\\Dockerfile",
+    "ImageName": "kubernetemaster:5000/blazorwebassemblyserver:v1",
+    "Name": "CleanArchitecture.Web.BlazorWebAssembly.Server"
+  }
+]

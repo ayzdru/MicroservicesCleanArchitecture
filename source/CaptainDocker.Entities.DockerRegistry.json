@@ -1,0 +1,10 @@
+[
+  {
+    "__Key__": "fe901f49-9193-4181-94ba-1e717ce666b4",
+    "Id": "fe901f49-9193-4181-94ba-1e717ce666b4",
+    "Address": "http://kubernetemaster:5000",
+    "Name": "kubernetemaster:5000",
+    "Password": "password",
+    "Username": "username"
+  }
+]

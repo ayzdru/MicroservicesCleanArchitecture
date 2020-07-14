@@ -19,9 +19,9 @@ using Blazorise.Icons.FontAwesome;
 using CleanArchitecture.Services.Basket.API.Grpc;
 using CleanArchitecture.Services.Catalog.API.Grpc;
 using CleanArchitecture.Services.Order.API.Grpc;
-using CleanArchitecture.Web.BlazorWebAssembly.States;
+using CleanArchitecture.Web.BlazorWebAssembly.Client.States;
 
-namespace CleanArchitecture.Web.BlazorWebAssembly
+namespace CleanArchitecture.Web.BlazorWebAssembly.Client
 {
     public class Program
     {
