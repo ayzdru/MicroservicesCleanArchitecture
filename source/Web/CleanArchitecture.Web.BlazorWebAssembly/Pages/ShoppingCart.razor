@@ -89,7 +89,7 @@
                 var isCompleted = await OrderClient.CheckoutAsync(new Empty(), headers);
                 if (isCompleted.Value)
                 {
-                
+                    BasketState.BasketItems = new List<BasketItemResponse>();
                 }
             }
 

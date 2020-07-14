@@ -28,9 +28,9 @@ namespace CleanArchitecture.Services.Payment.API.Grpc
             
         }
         [CapSubscribe("AddPayment")]
-        public void AddPayment(Guid orderId)
+        public void AddPayment(Guid orderId, [FromCap]CapHeader header)
         {
-            using (var transaction = _paymentDbContext.Database.BeginTransaction(_capBus, autoCommit: true))
+            using (var transaction = _paymentDbContext.Database.BeginTransaction(_capBus, autoCommit: false))
             {
                 _paymentDbContext.Payments.Add(new Entities.Payment() { OrderId = orderId });
                 _paymentDbContext.SaveChanges();

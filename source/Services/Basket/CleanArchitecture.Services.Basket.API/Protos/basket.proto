@@ -11,6 +11,7 @@ service Basket {
   rpc AddProductToBasket(BasketRequest) returns (google.protobuf.BoolValue);
   rpc GetBasketItemsCount(google.protobuf.Empty) returns (google.protobuf.Int32Value);
   rpc DeleteBasketItemByProductId (BasketRequest) returns (google.protobuf.BoolValue);
+  rpc ClearBasket (google.protobuf.Empty) returns (google.protobuf.BoolValue);
   rpc UpdateQuantityByProductId(UpdateQuantityRequest) returns (google.protobuf.BoolValue);
 }
 

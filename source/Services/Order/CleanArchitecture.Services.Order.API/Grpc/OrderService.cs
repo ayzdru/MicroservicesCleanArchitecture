@@ -35,12 +35,12 @@ namespace CleanArchitecture.Services.Order.API.Grpc
             var userIdValue = _httpContextAccessor.HttpContext.User?.FindFirst(x => x.Type.Equals("sub"))?.Value;
             if (userIdValue != null && Guid.TryParse(userIdValue, out Guid userId))
             {
-                using (_orderDbContext.Database.BeginTransaction(_capBus, autoCommit: true))
+                using (var transaction = _orderDbContext.Database.BeginTransaction(_capBus, autoCommit: false))
                 {
                     var user = _orderDbContext.Users.Where(q => q.Id == userId).SingleOrDefault();
                     if (user == null)
                     {
-                        _orderDbContext.Users.Add(new User(){ Id = userId, Name = "", Email = ""});
+                        _orderDbContext.Users.Add(new User() { Id = userId, Name = "", Email = "" });
                     }
                     var bearerToken = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Authorization];
                     var headers = new Metadata();
@@ -48,8 +48,8 @@ namespace CleanArchitecture.Services.Order.API.Grpc
                     var getBasketItemsResponse = await _basketClient.GetBasketItemsAsync(new Empty(), headers);
                     if (getBasketItemsResponse.BasketItems.Count > 0)
                     {
-                       
-                        var  newOrder = _orderDbContext.Orders.Add(new Entities.Order(Guid.NewGuid(), getBasketItemsResponse.BasketItems.Sum(q => q.Price * q.Quantity)));
+
+                        var newOrder = _orderDbContext.Orders.Add(new Entities.Order(Guid.NewGuid(), getBasketItemsResponse.BasketItems.Sum(q => q.Price * q.Quantity)));
                         foreach (var basketItem in getBasketItemsResponse.BasketItems)
                         {
                             if (Guid.TryParse(basketItem.ProductId, out Guid productId))
@@ -59,23 +59,27 @@ namespace CleanArchitecture.Services.Order.API.Grpc
                                 {
                                     _orderDbContext.Products.Add(new Product(productId, basketItem.Name, basketItem.Description, basketItem.Price));
                                 }
-                                else
-                                {
-                                   // await transaction.RollbackAsync();
-                                }
-                                newOrder.Entity.AddOrderItem(new OrderItem() { ProductId = productId, TotalAmount = basketItem.Price * basketItem.Quantity});
+                                newOrder.Entity.AddOrderItem(new OrderItem() { ProductId = productId, TotalAmount = basketItem.Price * basketItem.Quantity });
                             }
                             else
                             {
-                                //await transaction.RollbackAsync();
+                                await transaction.RollbackAsync();
+                                status.Value = false;
+                                return await Task.FromResult(status);
                             }
                         }
-                        _capBus.Publish("AddPayment", newOrder.Entity.Id);
-                        _orderDbContext.SaveChanges();
+                        await _capBus.PublishAsync("AddPayment", newOrder.Entity.Id);
+                        await _orderDbContext.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        await _basketClient.ClearBasketAsync(new Empty(), headers);
+                        status.Value = true;
+                        return await Task.FromResult(status);
                     }
                     else
                     {
-                        //await transaction.RollbackAsync();
+                        await transaction.RollbackAsync();
+                        status.Value = false;
+                        return await Task.FromResult(status);
                     }
                 }
                 status.Value = true;
@@ -84,5 +88,6 @@ namespace CleanArchitecture.Services.Order.API.Grpc
             status.Value = false;
             return await Task.FromResult(status);
         }
+
     }
 }

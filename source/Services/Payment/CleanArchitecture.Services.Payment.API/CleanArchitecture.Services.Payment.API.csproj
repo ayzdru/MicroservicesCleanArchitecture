@@ -31,6 +31,9 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <Protobuf Include="Protos\payment.proto" GrpcServices="Server" />
+	  <Protobuf Include="payment.proto" GrpcServices="Server" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Protos\" />
 	</ItemGroup>
 </Project>

@@ -69,10 +69,21 @@ namespace CleanArchitecture.Services.Basket.API.Grpc
                 {
                     basketItems = new List<BasketItem>();
                 }
-                basketItems.Add(new BasketItem(){ ProductId = request.ProductId, Quantity = 1});
+
+                var state = false;
+                var basketItem = basketItems.Where(q => q.ProductId == request.ProductId).SingleOrDefault();
+                if (basketItem == null)
+                {
+                    state = true;
+                    basketItems.Add(new BasketItem() { ProductId = request.ProductId, Quantity = 1 });
+                }
+                else
+                {
+                    basketItem.Quantity++;
+                }
                 var basketItemsSeriliazeJson = JsonSerializer.Serialize(basketItems);
                 await _cache.SetStringAsync(userId, basketItemsSeriliazeJson, options);
-                status.Value = true;
+                status.Value = state;
                 return await Task.FromResult(status);
             }
             else
@@ -121,6 +132,24 @@ namespace CleanArchitecture.Services.Basket.API.Grpc
                        status.Value = true;
                        return await Task.FromResult(status);
                     }
+                }
+            }
+            status.Value = false;
+            return await Task.FromResult(status);
+        }
+
+        public override async Task<BoolValue> ClearBasket(Empty request, ServerCallContext context)
+        {
+            BoolValue status = new BoolValue();
+            var userId = _httpContextAccessor.HttpContext.User?.FindFirst(x => x.Type.Equals("sub"))?.Value;
+            if (userId != null)
+            {
+                var basketItemsJson = await _cache.GetStringAsync(userId);
+                if (!string.IsNullOrEmpty(basketItemsJson))
+                {
+                    await _cache.RemoveAsync(userId);
+                    status.Value = true;
+                    return await Task.FromResult(status);
                 }
             }
             status.Value = false;
